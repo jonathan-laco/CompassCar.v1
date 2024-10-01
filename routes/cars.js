@@ -22,8 +22,13 @@ const validateCarData = (brand, model, year) => {
 router.post('/', async (req, res) => {
     const { brand, model, year, items } = req.body;
 
-    if (!brand || !model || !year || !items || items.length === 0) {
-        return res.status(400).json({ error: "All fields are required" });
+    const validationError = validateCarData(brand, model, year);
+    if (validationError) {
+        return res.status(400).json({ error: validationError });
+    }
+
+    if (!items || items.length === 0) {
+        return res.status(400).json({ error: "At least one item is required" });
     }
 
     const existingCar = await prisma.car.findUnique({
@@ -31,7 +36,7 @@ router.post('/', async (req, res) => {
     });
 
     if (existingCar) {
-        return res.status(409).json({ error: 'there is already a car with this data' });
+        return res.status(409).json({ error: 'There is already a car with this data' });
     }
 
     try {
@@ -51,6 +56,8 @@ router.post('/', async (req, res) => {
         return res.status(500).json({ error: 'Erro ao adicionar carro' });
     }
 });
+
+
 
 // Endpoint para listar carros
 router.get('/', async (req, res) => {
