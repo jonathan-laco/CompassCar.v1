@@ -1,0 +1,12 @@
+{
+  "name": "desafio1-nodejsset",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Jonathan Laco",
+  "license": "ISC",
+  "description": "Api compasscar"
+}
