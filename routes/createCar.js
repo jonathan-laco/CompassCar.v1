@@ -37,6 +37,10 @@ router.post('/', async (req, res) => {
         return res.status(409).json({ error: 'There is already a car with this data' });
     }
 
+    // linha adicionada para remover duplicatas
+    
+    const uniqueItems = [...new Set(items)];
+
     try {
         const car = await prisma.car.create({
             data: {
@@ -44,7 +48,7 @@ router.post('/', async (req, res) => {
                 model,
                 year,
                 items: {
-                    create: items.map(item => ({ name: item })),
+                    create: uniqueItems.map(item => ({ name: item })),
                 },
             },
         });
