@@ -19,24 +19,21 @@ router.patch('/:id', async (req, res) => {
             return res.status(404).json({ error: 'Car not found' });
         }
 
-        // Validação do ano
         if (year && (year < MIN_YEAR || year > MAX_YEAR)) {
             return res.status(400).json({ error: `year should be between ${MIN_YEAR} and ${MAX_YEAR}` });
         }
 
-        // Validação dos itens
         if (items && (!Array.isArray(items) || items.length === 0)) {
             return res.status(400).json({ error: "At least one item is required" });
         }
 
-        // Preparar dados atualizados
         const updatedData = {
             brand: brand || carExists.brand,
             model: model || carExists.model,
             year: year || carExists.year,
             items: items ? {
-                deleteMany: {}, // Remove todos os itens antigos
-                create: [...new Set(items.map(item => ({ name: item })))], // Remove duplicatas
+                deleteMany: {}, 
+                create: [...new Set(items.map(item => ({ name: item })))], 
             } : undefined,
         };
 
