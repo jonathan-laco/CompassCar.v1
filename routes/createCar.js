@@ -48,7 +48,7 @@ router.post('/', async (req, res) => {
                 model,
                 year,
                 items: {
-                    create: uniqueItems.map(item => ({ name: item })),
+                    create: uniqueItems.map(item => ({ name: item })), // linha alterada para remover duplicatas
                 },
             },
         });
