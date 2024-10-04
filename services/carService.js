@@ -118,31 +118,44 @@ const listCars = async (page, limit, brand, model, year) => {
   };
 };
 
+//  refactored updateCar
 const updateCar = async (id, { brand, model, year, items }) => {
   const carExists = await prisma.car.findUnique({
     where: { id: parseInt(id) },
   });
+
   if (!carExists) {
     throw { status: 404, message: "Car not found" };
   }
 
-  if (year && (year < MIN_YEAR || year > MAX_YEAR)) {
+  if (!year) {
+    throw { status: 400, message: "year is required" };
+  }
+  if (year < MIN_YEAR || year > MAX_YEAR) {
     throw {
       status: 400,
       message: `year should be between ${MIN_YEAR} and ${MAX_YEAR}`,
     };
   }
 
+  if (
+    !items ||
+    items.length === 0 ||
+    items.every((item) => item.trim() === "")
+  ) {
+    throw { status: 400, message: "items are required" };
+  }
+
+  const validItems = items.filter((item) => item.trim() !== "");
+
   const updatedData = {
     brand: brand || carExists.brand,
     model: model || carExists.model,
-    year: year || carExists.year,
-    items: items
-      ? {
-          deleteMany: {},
-          create: [...new Set(items.map((item) => ({ name: item })))],
-        }
-      : undefined,
+    year,
+    items: {
+      deleteMany: {},
+      create: [...new Set(validItems.map((item) => ({ name: item })))], // Crie os novos
+    },
   };
 
   await prisma.car.update({
