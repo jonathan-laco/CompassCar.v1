@@ -1,23 +1,12 @@
-const express = require('express');
-const app = express();
-const PORT = process.env.PORT || 3000;
+const express = require("express");
+const carRoutes = require("./routes/carRoutes");
 
+const app = express();
 app.use(express.json());
 
-// Importar as rotas
-const createCar = require('./routes/createCar');
-const deleteCar = require('./routes/deleteCar');
-const getCar = require('./routes/getCar');
-const listCars = require('./routes/listCars');
-const updateCar = require('./routes/updateCar');
+app.use("/api/v1/cars", carRoutes);
 
-// Usar as rotas
-app.use('/api/v1/cars', createCar);
-app.use('/api/v1/cars', deleteCar);
-app.use('/api/v1/cars', getCar);
-app.use('/api/v1/cars', listCars);
-app.use('/api/v1/cars', updateCar);
-
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Servidor rodando na porta ${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });
