@@ -67,9 +67,20 @@ const getCar = async (id) => {
   };
 };
 
+// listCars refactored
 const listCars = async (page, limit, brand, model, year) => {
   const pageInt = parseInt(page);
   const limitInt = Math.min(Math.max(parseInt(limit), 1), 10);
+
+  // Validação para garantir que a página seja maior que 0
+  if (isNaN(pageInt) || pageInt < 1) {
+    return {
+      error: {
+        status: 400,
+        message: "ERROR! pages must be greater than 0",
+      },
+    };
+  }
   const skip = (pageInt - 1) * limitInt;
 
   const filters = {};
