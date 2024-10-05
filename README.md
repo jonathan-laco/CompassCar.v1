@@ -6,7 +6,7 @@ Este projeto é uma API CRUD. Ele permite criar, listar, atualizar e excluir car
 
 - Node.js
 - Prisma (ORM)
-- SQLite (Banco de dados)
+-  MySQL
 - Express (Framework)
 - Postman (Testes de API)
 
