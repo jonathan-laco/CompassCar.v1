@@ -15,6 +15,14 @@ const validateCarData = (brand, model, year) => {
 };
 
 const createCar = async (brand, model, year, items) => {
+  if (!items || !Array.isArray(items) || items.length === 0) {
+    throw { status: 400, message: "items is required and cannot be empty" };
+  }
+
+  if (items.some((item) => item.trim() === "")) {
+    throw { status: 400, message: "items cannot contain empty values" };
+  }
+
   const existingCar = await prisma.car.findUnique({
     where: { brand_model_year: { brand, model, year } },
   });
@@ -154,7 +162,7 @@ const updateCar = async (id, { brand, model, year, items }) => {
     year,
     items: {
       deleteMany: {},
-      create: [...new Set(validItems.map((item) => ({ name: item })))], // Crie os novos
+      create: [...new Set(validItems.map((item) => ({ name: item })))],
     },
   };
 
