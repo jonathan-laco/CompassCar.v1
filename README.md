@@ -108,6 +108,8 @@ Você pode usar o Postman para testar os endpoints da API. Abaixo estão os pass
        "brand": "Chevrolet",
        "model": "Onix",
        "year": 2020
+       "items": ["trava eletrica"]
+
      }
      ```
    - **Resposta Esperada:**
