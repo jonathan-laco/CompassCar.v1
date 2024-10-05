@@ -1,5 +1,5 @@
 datasource db {
-    provider = "sqlite"
+    provider = "mysql"
     url      = env("DATABASE_URL")
 }
 
@@ -19,8 +19,8 @@ model Car {
 
 model CarItem {
     id    Int    @id @default(autoincrement())
-    name  String
     carId Int
+    name  String
     car   Car    @relation("CarItems", fields: [carId], references: [id], onDelete: Cascade)
 
     @@unique([name, carId])
