@@ -17,6 +17,8 @@ Antes de começar, certifique-se de ter as seguintes ferramentas instaladas:
 - Node.js
 - npm
 - Postman
+- MySQL (Instalado e rodando)
+
 
 ## Instalação
 
@@ -34,13 +36,25 @@ Siga os passos abaixo para configurar o ambiente:
    cd desafio1-nodejsSet
    ```
 
-3. Instale as dependências:
+3. Configure o banco de dados MySQL. No arquivo .env, configure a variável DATABASE_URL para o seguinte formato:
 
    ```sh
-   npm  install
+   DATABASE_URL="mysql://root@127.0.0.1:3306/compasscar"
    ```
 
-4. Inicie o servidor:
+4. Instale as dependências:
+
+   ```sh
+    npm  install
+   ```
+5. Execute as migrações para gerar as tabelas no banco de dados::
+
+   ```sh
+    npx prisma migrate dev --name init
+
+   ```
+
+5. Inicie o servidor:
 
    ```sh
    npm start
@@ -49,8 +63,7 @@ Siga os passos abaixo para configurar o ambiente:
 O servidor será iniciado na porta 3000.
 
 ## Configuração do Banco de Dados
-
-O banco de dados utilizado é o SQLite, e o arquivo do banco é gerado automaticamente ao rodar as migrações com o Prisma.
+O banco de dados utilizado é o MySQL. A configuração do banco de dados é feita através da variável de ambiente DATABASE_URL no arquivo .env. Ao executar o comando npx prisma migrate dev --name init, o Prisma criará automaticamente a base de dados compasscar (caso ainda não exista) e aplicará as migrações necessárias para gerar as tabelas de acordo com seu modelo.
 
 ## Testando a API com Postman
 
