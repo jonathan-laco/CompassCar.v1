@@ -6,7 +6,6 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon index.js",
     "start": "node index.js"
-    
   },
   "keywords": [],
   "author": "Jonathan Laco",
@@ -15,6 +14,7 @@
   "dependencies": {
     "@prisma/client": "^5.20.0",
     "express": "^4.21.0",
+    "joi": "^17.13.3",
     "prisma": "^5.20.0"
   },
   "devDependencies": {

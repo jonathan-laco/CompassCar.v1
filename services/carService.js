@@ -1,27 +1,14 @@
 const { PrismaClient } = require("@prisma/client");
+const {
+  createCarSchema,
+  updateCarSchema,
+} = require("../validations/carValidation");
 
 const prisma = new PrismaClient();
-const MIN_YEAR = 2015;
-const MAX_YEAR = 2025;
-
-const validateCarData = (brand, model, year) => {
-  if (!brand) return "brand is required";
-  if (!model) return "model is required";
-  if (!year) return "year is required";
-  if (year < MIN_YEAR || year > MAX_YEAR) {
-    return `year should be between ${MIN_YEAR} and ${MAX_YEAR}`;
-  }
-  return null;
-};
 
 const createCar = async (brand, model, year, items) => {
-  if (!items || !Array.isArray(items) || items.length === 0) {
-    throw { status: 400, message: "items is required and cannot be empty" };
-  }
-
-  if (items.some((item) => item.trim() === "")) {
-    throw { status: 400, message: "items cannot contain empty values" };
-  }
+  // Validar dados do carro usando Joi
+  await createCarSchema.validateAsync({ brand, model, year, items });
 
   const existingCar = await prisma.car.findUnique({
     where: { brand_model_year: { brand, model, year } },
@@ -75,12 +62,11 @@ const getCar = async (id) => {
   };
 };
 
-// listCars refactored
+// Refactored listCars
 const listCars = async (page, limit, brand, model, year) => {
   const pageInt = parseInt(page);
   const limitInt = Math.min(Math.max(parseInt(limit), 1), 10);
 
-  // Validação para garantir que a página seja maior que 0
   if (isNaN(pageInt) || pageInt < 1) {
     return {
       error: {
@@ -126,7 +112,7 @@ const listCars = async (page, limit, brand, model, year) => {
   };
 };
 
-//  refactored updateCar
+// Refactored updateCar
 const updateCar = async (id, { brand, model, year, items }) => {
   const carExists = await prisma.car.findUnique({
     where: { id: parseInt(id) },
@@ -136,34 +122,22 @@ const updateCar = async (id, { brand, model, year, items }) => {
     throw { status: 404, message: "Car not found" };
   }
 
-  if (!year) {
-    throw { status: 400, message: "year is required" };
-  }
-  if (year < MIN_YEAR || year > MAX_YEAR) {
-    throw {
-      status: 400,
-      message: `year should be between ${MIN_YEAR} and ${MAX_YEAR}`,
-    };
-  }
+  // Validar dados do carro usando Joi
+  await updateCarSchema.validateAsync({ brand, model, year, items });
 
-  if (
-    !items ||
-    items.length === 0 ||
-    items.every((item) => item.trim() === "")
-  ) {
-    throw { status: 400, message: "items are required" };
-  }
-
-  const validItems = items.filter((item) => item.trim() !== "");
+  const validItems = items ? items.filter((item) => item.trim() !== "") : [];
 
   const updatedData = {
     brand: brand || carExists.brand,
     model: model || carExists.model,
-    year,
-    items: {
-      deleteMany: {},
-      create: [...new Set(validItems.map((item) => ({ name: item })))],
-    },
+    year: year || carExists.year,
+    items:
+      validItems.length > 0
+        ? {
+            deleteMany: {},
+            create: [...new Set(validItems.map((item) => ({ name: item })))],
+          }
+        : undefined,
   };
 
   await prisma.car.update({
@@ -173,7 +147,6 @@ const updateCar = async (id, { brand, model, year, items }) => {
 };
 
 module.exports = {
-  validateCarData,
   createCar,
   deleteCar,
   getCar,
