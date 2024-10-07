@@ -69,24 +69,6 @@ O banco de dados utilizado é o MySQL. A configuração do banco de dados é fei
 ## Validação de Dados com Joi
 
 O Joi é utilizado para validar os dados de entrada da API. Ele garante que os dados enviados nas requisições estejam no formato correto e atendam aos requisitos definidos.
-
-### Exemplo de Validação com Joi
-
-No arquivo `validators/carValidator.js`, a validação dos dados de um carro é feita da seguinte forma:
-
-```javascript
-const Joi = require("joi");
-
-const carSchema = Joi.object({
-  brand: Joi.string().required(),
-  model: Joi.string().required(),
-  year: Joi.number().integer().min(1886).required(),
-  items: Joi.array().items(Joi.string()).required(),
-});
-
-module.exports = carSchema;
-```
-
 Essa validação é aplicada nos endpoints da API para garantir que os dados estejam corretos antes de serem processados.
 
 ## Testando a API com Postman
